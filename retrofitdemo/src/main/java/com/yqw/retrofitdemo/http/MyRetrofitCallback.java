@@ -7,9 +7,6 @@ import android.widget.Toast;
 import com.yqw.retrofitdemo.utils.DialogUtils;
 import com.yqw.retrofitdemo.utils.LogUtil;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,17 +17,32 @@ public abstract class MyRetrofitCallback<T> implements Callback<T>{
     protected MyRetrofitCallback(Context context) {
         this.context = context;
     }
+    @Override
+    public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
+        if (200 == response.code()){
+//            onSuccess(response);
+            onSuccessful(call,response);
+        }else {
+            onFail(call,null,response);
+        }
+    }
+
+    @Override
+    public void onFailure(Call<T> call, Throwable t) {
+        onFail(call,t,null);
+    }
 
     public abstract void onSuccessful(Call<T> call, Response<T> response);
 
-    private void onSuccess(Response<ResponseBody> response){
-        try {
-            String result = response.body().string();
-            LogUtil.e(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void onSuccess(Response<T> response){
+//        try {
+//            Response<ResponseBody> mResponse = (Response<ResponseBody>)response;
+//            String result = mResponse.body().string();
+//            LogUtil.e(result);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     public void onFail(Call<T> call,Throwable t,Response<T> response){
         if (null == response){
             Toast.makeText(context,t.toString(),Toast.LENGTH_SHORT).show();
@@ -54,20 +66,5 @@ public abstract class MyRetrofitCallback<T> implements Callback<T>{
 //            }
             // errorEntity.getErrorCode() 获取后台返回的 errorCode，根据 errorCode 前端做相应的处理
         }
-    }
-
-    @Override
-    public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
-        if (200 == response.code()){
-            onSuccess((Response<ResponseBody>) response);
-            onSuccessful(call,response);
-        }else {
-            onFail(call,null,response);
-        }
-    }
-
-    @Override
-    public void onFailure(Call<T> call, Throwable t) {
-        onFail(call,t,null);
     }
 }

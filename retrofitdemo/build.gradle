@@ -42,5 +42,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     //解析json
     implementation 'com.google.code.gson:gson:2.8.5'
+    //这个玩意就是用来把json变成java中的实体类
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
 }
