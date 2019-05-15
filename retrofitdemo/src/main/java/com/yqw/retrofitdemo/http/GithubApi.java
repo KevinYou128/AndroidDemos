@@ -1,17 +1,14 @@
 package com.yqw.retrofitdemo.http;
 
 import com.yqw.retrofitdemo.bean.Contributors;
-import com.yqw.retrofitdemo.bean.TestPostBean;
 
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -46,7 +43,10 @@ public interface GithubApi {
 //    @GET("search/repositories")
 //    Call<RetrofitBean> queryRetrofitByGetCallMap(@QueryMap Map<String,String> map);
 
-    //    @FormUrlEncoded
-    @POST("upUser")
-    Call<List<Contributors>> postTestPostBean(@Body TestPostBean postBean);
+//    @FormUrlEncoded
+//    @POST("upUser")
+//    Call<List<Contributors>> postTestPostBeans(@Field("content") String content);
+//    @FormUrlEncoded
+//    @POST("upUser")
+//    Call<ResponseBody> postTestPostBean(@Field("content") String content);
 }

@@ -32,14 +32,21 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
     //retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     //    //把json变成java中的实体类
     //    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     //okhttp rerofit2基于okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    //配置缓存策略，必须跟okhttp同一版本号
+//    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     //解析json
     implementation 'com.google.code.gson:gson:2.8.5'
     //这个玩意就是用来把json变成java中的实体类
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    //rxjava
+    implementation'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 }
