@@ -10,6 +10,9 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
+/**
+ * 模拟的接口 这里主要用来测试post请求
+ */
 public interface MockApi {
 
     @FormUrlEncoded

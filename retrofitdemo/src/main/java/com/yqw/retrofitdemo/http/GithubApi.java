@@ -5,6 +5,7 @@ import com.yqw.retrofitdemo.bean.Contributors;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -49,4 +50,7 @@ public interface GithubApi {
 //    @FormUrlEncoded
 //    @POST("upUser")
 //    Call<ResponseBody> postTestPostBean(@Field("content") String content);
+
+    @GET("repos/square/retrofit/contributors")
+    Observable<List<Contributors>> getContributorsByRxjava();
 }

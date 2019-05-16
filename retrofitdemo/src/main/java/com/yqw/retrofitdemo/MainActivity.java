@@ -1,15 +1,16 @@
 package com.yqw.retrofitdemo;
 
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.yqw.retrofitdemo.bean.Contributors;
 import com.yqw.retrofitdemo.bean.Contributorsss;
-import com.yqw.retrofitdemo.http.Api;
 import com.yqw.retrofitdemo.http.GithubService;
 import com.yqw.retrofitdemo.http.MyRetrofitCallback;
+import com.yqw.retrofitdemo.http.MyRxjavaCallback;
+import com.yqw.retrofitdemo.utils.DialogUtils;
 import com.yqw.retrofitdemo.utils.GsonUtil;
 import com.yqw.retrofitdemo.utils.LogUtil;
 
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -33,8 +36,51 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        updata3();
+    }
+
+
+    @OnClick({R.id.bt_get_retrofit2,
+    R.id.bt_get_retrofit2_s,
+    R.id.bt_post_retrofit2_s,
+    R.id.bt_get_retrofit2_rx,
+    R.id.bt_get_retrofit2_rx_s,
+    R.id.bt_post_retrofit2_rx_s,
+    R.id.bt_up_retrofit2_rx_s,
+    R.id.bt_down_retrofit2_rx})
+    void onClickButton(View v){
+        switch (v.getId()){
+            case R.id.bt_get_retrofit2:
+                //原始调用 get
+                updata();
+                break;
+            case R.id.bt_get_retrofit2_s:
+                //封装后调用 get
+                updata2();
+                break;
+            case R.id.bt_post_retrofit2_s:
+                //封装后调用 post
+                updata5();
+                break;
+            case R.id.bt_get_retrofit2_rx:
+                //retrofit2+rxjava get
+                updataRxjava2();
+                break;
+            case R.id.bt_get_retrofit2_rx_s:
+                //retrofit2+rxjava get 封装
+                updataRxjava2_s();
+                break;
+            case R.id.bt_post_retrofit2_rx_s:
+                //retrofit2+rxjava post 封装
+                break;
+            case R.id.bt_up_retrofit2_rx_s:
+                //retrofit2+rxjava 上传 封装
+                break;
+            case R.id.bt_down_retrofit2_rx:
+                //retrofit2+rxjava 下载 封装
+                break;
+        }
     }
 
     /**
@@ -48,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new MyRetrofitCallback<List<Contributors>>(this) {
             @Override
             public void onSuccessful(Call<List<Contributors>> call, Response<List<Contributors>> response) {
-//                try {
+                DialogUtils.showPrompt(MainActivity.this,"list的第一个数据："
+                +response.body().get(0).toString());
+                //                try {
 //                    String result = response.body().string();
 //                    LogUtil.e(result);
 //                } catch (IOException e) {
@@ -139,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     //这里之所以不直接用Bean解析，是因为post传递数据如果跟服务器没有沟通好，可能出现解析异常
                     String result = response.body().string();
                     List<Contributorsss> list = GsonUtil.jsonToList(result, Contributorsss.class);
+                    DialogUtils.showPrompt(MainActivity.this,result);
 
                     LogUtil.e(result);
                 } catch (IOException e) {
@@ -150,37 +199,54 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updataRxjava() {
 
-        Api.getApiService().getTopMovie(0, 10)
+    /**
+     * 配合rxjava2的网络请求
+     * 封装
+     */
+    private void updataRxjava2_s(){
+        GithubService.getGithubApi().getContributorsByRxjava()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Movie>() {
+                .subscribe(new MyRxjavaCallback<List<Contributors>>(this) {
+                    @Override
+                    public void onSuccessful(List<Contributors> contributors) {
+                        LogUtil.e(contributors.toString());
+                        LogUtil.e(Thread.currentThread().getName());
+                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
+                    }
+                });
+    }
+    /**
+     * 配合rxjava2的网络请求
+     */
+    private void updataRxjava2(){
+        GithubService.getGithubApi().getContributorsByRxjava()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Contributors>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        LogUtil.e("onSubscribe: ");
+                        LogUtil.e("onSubscribe");
                     }
 
                     @Override
-                    public void onNext(Movie movie) {
-//                        LogUtil.e("onNext: " + movie.getTitle());
-//                        List<Subjects> list = movie.getSubjects();
-//                        for (Subjects sub : list) {
-//                            Log.d(TAG, "onNext: " + sub.getId() + "," + sub.getYear() + "," + sub.getTitle());
-//                        }
+                    public void onNext(List<Contributors> contributors) {
+                        LogUtil.e(contributors.toString());
+                        LogUtil.e(Thread.currentThread().getName());
+                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e("onError: " + e.getMessage());
+                        LogUtil.e("onError");
                     }
 
                     @Override
                     public void onComplete() {
-                        LogUtil.e("onComplete: Over!");
+                        LogUtil.e("onComplete");
                     }
                 });
-
     }
 
     /**
@@ -198,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         String result = response.body().string();
                         LogUtil.e(result);
+                        DialogUtils.showPrompt(MainActivity.this,result);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
