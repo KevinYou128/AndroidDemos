@@ -1,9 +1,11 @@
 package com.yqw.retrofitdemo.http;
 
 import com.yqw.retrofitdemo.bean.Contributors;
+import com.yqw.retrofitdemo.bean.Contributorsss;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -21,4 +23,8 @@ public interface MockApi {
     @FormUrlEncoded
     @POST("upUser")
     Call<ResponseBody> postTestPostBean(@Field("content") String content);
+
+    @FormUrlEncoded
+    @POST("upUser")
+    Observable<List<Contributorsss>> postTestPostBeanByRxjava(@Field("content") String content);
 }

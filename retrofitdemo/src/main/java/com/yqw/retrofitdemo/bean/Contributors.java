@@ -1,5 +1,9 @@
 package com.yqw.retrofitdemo.bean;
 
+/**
+ * 故意传错部分字段
+ * string等错误的存为int
+ */
 public class Contributors {
 
     /**

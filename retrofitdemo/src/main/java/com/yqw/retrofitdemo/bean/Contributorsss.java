@@ -1,5 +1,8 @@
 package com.yqw.retrofitdemo.bean;
 
+/**
+ * 修正字符串的故意传错
+ */
 public class Contributorsss {
 
 

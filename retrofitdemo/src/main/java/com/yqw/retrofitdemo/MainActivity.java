@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_post_retrofit2_rx_s:
                 //retrofit2+rxjava post 封装
+                updataRxjava2_post_s();
                 break;
             case R.id.bt_up_retrofit2_rx_s:
                 //retrofit2+rxjava 上传 封装
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //这里之所以不直接用Bean解析，是因为post传递数据如果跟服务器没有沟通好，可能出现解析异常
                     String result = response.body().string();
-                    List<Contributorsss> list = GsonUtil.jsonToList(result, Contributorsss.class);
+                    List<Contributors> list = GsonUtil.jsonToList(result, Contributors.class);
                     DialogUtils.showPrompt(MainActivity.this,result);
 
                     LogUtil.e(result);
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 配合rxjava2的网络请求
-     * 封装
+     * 封装 get
      */
     private void updataRxjava2_s(){
         GithubService.getGithubApi().getContributorsByRxjava()
@@ -211,6 +212,23 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new MyRxjavaCallback<List<Contributors>>(this) {
                     @Override
                     public void onSuccessful(List<Contributors> contributors) {
+                        LogUtil.e(contributors.toString());
+                        LogUtil.e(Thread.currentThread().getName());
+                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
+                    }
+                });
+    }
+    /**
+     * 配合rxjava2的网络请求
+     * 封装 post
+     */
+    private void updataRxjava2_post_s(){
+        GithubService.getMockApi().postTestPostBeanByRxjava("contentTest")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MyRxjavaCallback<List<Contributorsss>>(this) {
+                    @Override
+                    public void onSuccessful(List<Contributorsss> contributors) {
                         LogUtil.e(contributors.toString());
                         LogUtil.e(Thread.currentThread().getName());
                         DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
