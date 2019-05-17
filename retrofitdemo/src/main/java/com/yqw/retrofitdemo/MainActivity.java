@@ -42,15 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     @OnClick({R.id.bt_get_retrofit2,
-    R.id.bt_get_retrofit2_s,
-    R.id.bt_post_retrofit2_s,
-    R.id.bt_get_retrofit2_rx,
-    R.id.bt_get_retrofit2_rx_s,
-    R.id.bt_post_retrofit2_rx_s,
-    R.id.bt_up_retrofit2_rx_s,
-    R.id.bt_down_retrofit2_rx})
-    void onClickButton(View v){
-        switch (v.getId()){
+            R.id.bt_get_retrofit2_s,
+            R.id.bt_post_retrofit2_s,
+            R.id.bt_get_retrofit2_rx,
+            R.id.bt_get_retrofit2_rx_s,
+            R.id.bt_post_retrofit2_rx_s,
+            R.id.bt_up_retrofit2_rx_s,
+            R.id.bt_down_retrofit2_rx})
+    void onClickButton(View v) {
+        switch (v.getId()) {
             case R.id.bt_get_retrofit2:
                 //原始调用 get
                 updata();
@@ -77,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_up_retrofit2_rx_s:
                 //retrofit2+rxjava 上传 封装
+                //todo 参考https://github.com/zhou-you/RxEasyHttp
+                //todo 参考七牛api方案
                 break;
             case R.id.bt_down_retrofit2_rx:
                 //retrofit2+rxjava 下载 封装
+                //todo 参考https://github.com/zhou-you/RxEasyHttp
+                //todo 参考七牛api方案
                 break;
         }
     }
@@ -95,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new MyRetrofitCallback<List<Contributors>>(this) {
             @Override
             public void onSuccessful(Call<List<Contributors>> call, Response<List<Contributors>> response) {
-                DialogUtils.showPrompt(MainActivity.this,"list的第一个数据："
-                +response.body().get(0).toString());
+                DialogUtils.showPrompt(MainActivity.this, "list的第一个数据："
+                        + response.body().get(0).toString());
                 //                try {
 //                    String result = response.body().string();
 //                    LogUtil.e(result);
@@ -188,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     //这里之所以不直接用Bean解析，是因为post传递数据如果跟服务器没有沟通好，可能出现解析异常
                     String result = response.body().string();
                     List<Contributors> list = GsonUtil.jsonToList(result, Contributors.class);
-                    DialogUtils.showPrompt(MainActivity.this,result);
+                    DialogUtils.showPrompt(MainActivity.this, result);
 
                     LogUtil.e(result);
                 } catch (IOException e) {
@@ -205,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
      * 配合rxjava2的网络请求
      * 封装 get
      */
-    private void updataRxjava2_s(){
+    private void updataRxjava2_s() {
         GithubService.getGithubApi().getContributorsByRxjava()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -214,15 +218,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccessful(List<Contributors> contributors) {
                         LogUtil.e(contributors.toString());
                         LogUtil.e(Thread.currentThread().getName());
-                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
+                        DialogUtils.showPrompt(MainActivity.this, "成功后第一个值：" + contributors.get(0).getLogin());
                     }
                 });
     }
+
     /**
      * 配合rxjava2的网络请求
      * 封装 post
      */
-    private void updataRxjava2_post_s(){
+    private void updataRxjava2_post_s() {
         GithubService.getMockApi().postTestPostBeanByRxjava("contentTest")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -231,14 +236,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccessful(List<Contributorsss> contributors) {
                         LogUtil.e(contributors.toString());
                         LogUtil.e(Thread.currentThread().getName());
-                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
+                        DialogUtils.showPrompt(MainActivity.this, "成功后第一个值：" + contributors.get(0).getLogin());
                     }
                 });
     }
+
     /**
      * 配合rxjava2的网络请求
      */
-    private void updataRxjava2(){
+    private void updataRxjava2() {
         GithubService.getGithubApi().getContributorsByRxjava()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -252,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(List<Contributors> contributors) {
                         LogUtil.e(contributors.toString());
                         LogUtil.e(Thread.currentThread().getName());
-                        DialogUtils.showPrompt(MainActivity.this,"成功后第一个值："+contributors.get(0).getLogin());
+                        DialogUtils.showPrompt(MainActivity.this, "成功后第一个值：" + contributors.get(0).getLogin());
                     }
 
                     @Override
@@ -266,6 +272,53 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+//    /**
+//     * 配合rxjava2的网络请求
+//     */
+//    private void upFileRxjava2() {
+//        String file = null;//文件
+//        // 创建 RequestBody，用于封装 请求RequestBody
+//        RequestBody requestFile =
+//                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//
+//        // MultipartBody.Part is used to send also the actual file name
+//        MultipartBody.Part body =
+//                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+//
+//        // 添加描述
+//        String descriptionString = "hello, 这是文件描述";
+//        RequestBody description =
+//                RequestBody.create(
+//                        MediaType.parse("multipart/form-data"), descriptionString);
+//
+//        GithubService.getGithubApi().getContributorsByRxjava()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<List<Contributors>>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        LogUtil.e("onSubscribe");
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<Contributors> contributors) {
+//                        LogUtil.e(contributors.toString());
+//                        LogUtil.e(Thread.currentThread().getName());
+//                        DialogUtils.showPrompt(MainActivity.this, "成功后第一个值：" + contributors.get(0).getLogin());
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        LogUtil.e("onError");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        LogUtil.e("onComplete");
+//                    }
+//                });
+//    }
 
     /**
      * 原始调用
@@ -282,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         String result = response.body().string();
                         LogUtil.e(result);
-                        DialogUtils.showPrompt(MainActivity.this,result);
+                        DialogUtils.showPrompt(MainActivity.this, result);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
